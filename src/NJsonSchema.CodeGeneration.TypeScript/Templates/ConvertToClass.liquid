@@ -1,15 +1,15 @@
 ﻿{% if IsNewableObject -%}
 {%   if CheckNewableObject -%}
-{{ Variable }} = {{ Value }} ? {{ Type }}.fromJS({{ Value }}{% if HandleReferences -%}, _mappings{% endif %}) : {% if HasDefaultValue %}{{ DefaultValue }}{% else %}<any>{{ NullValue }}{% endif %};
+{{ Variable }} = {{ Value }} ? {{ Type }}{% if UseParsingUtils -%}ParsingUtils{% endif -%}.fromJS({{ Value }}{% if HandleReferences -%}, _mappings{% endif %}) : {% if HasDefaultValue %}{{ DefaultValue }}{% else %}<any>{{ NullValue }}{% endif %};
 {%   else -%}
-{{ Variable }} = {{ Type }}.fromJS({{ Value }}{% if HandleReferences -%}, _mappings{% endif %});
+{{ Variable }} = {{ Type }}{% if UseParsingUtils -%}ParsingUtils{% endif -%}.fromJS({{ Value }}{% if HandleReferences -%}, _mappings{% endif %});
 {%   endif -%}
 {% elseif IsArray -%}
 if (Array.isArray({{ Value }})) {
     {{ Variable }} = [] as any;
     for (let item of {{ Value }})
 {%   if IsArrayItemNewableObject -%}
-        {{ Variable }}{% if RequiresStrictPropertyInitialization %}!{% endif %}.push({{ ArrayItemType }}.fromJS(item{% if HandleReferences %}, _mappings{% endif %}));
+        {{ Variable }}{% if RequiresStrictPropertyInitialization %}!{% endif %}.push({{ ArrayItemType }}{% if UseParsingUtils -%}ParsingUtils{% endif -%}.fromJS(item{% if HandleReferences %}, _mappings{% endif %}));
 {%   else -%}
 {%     if IsArrayItemDate or IsArrayItemDateTime -%}
         {{ Variable }}{% if RequiresStrictPropertyInitialization %}!{% endif %}.push({{ StringToDateCode }}(item));
